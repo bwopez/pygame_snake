@@ -57,11 +57,63 @@ class Player(pygame.sprite.Sprite):
                 if self.rect.bottom >= win.get_height():
                     self.rect.bottom = win.get_height()
 
+def title_screen():
+    snake_splash = pygame.image.load("images/snake_title_screen.png")
+    button_unpressed = pygame.image.load("images/button_unpressed.png")
+    button_pressed = pygame.image.load("images/button_pressed.png")
+
+    button_width = button_unpressed.get_rect().width
+    button_height = button_unpressed.get_rect().height
+
+    running = True
+    while running:
+        win.fill("White")
+        win.blit(snake_splash, (0, 0))
+
+        # buttons
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+        # button input ================================================
+        keys = pygame.key.get_pressed()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if keys[K_ESCAPE]:
+            running = False
+
+        # TODO: fix bug where if you keep the mouse unmoved on the button when scenes change
+        # TODO: that it'll just press the button again
+        # mouse hover left button
+        # start
+        if 150 <= mouse_x <= 150 + button_width and 700 <= mouse_y <= 700 + button_height:
+            win.blit(button_pressed, (150, 700))
+            if event.type == pygame.MOUSEBUTTONUP:
+                # pygame.time.wait(200)
+                main_game()
+        else:
+            win.blit(button_unpressed, (150, 700))
+        
+        # mouse hover right button
+        # quit
+        if 500 <= mouse_x <= 500 + button_width and 700 <= mouse_y <= 700 + button_height:
+            win.blit(button_pressed, (500, 700))
+            if event.type == pygame.MOUSEBUTTONUP:
+                # pygame.time.wait(200)
+                running = False
+        else:
+            win.blit(button_unpressed, (500, 700))
+
+        # title_screen update ============================================
+        clock.tick(60)
+        pygame.display.update()
+
+    return 
+
 def main_game():
-    head = Player("images/snake_32b.png")
+    head = Player("images/snake_32b.png", (win.get_rect().center[0] - 32 / 2), (win.get_rect().center[1] - 32 / 2))
     snake_list = []
     snake_list.append(head)
-    food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
+    food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
     # movement
     left, right, up, down = False, False, False, False
@@ -70,9 +122,15 @@ def main_game():
 
     while running:
 
+        # TODO: keep track of high score (len(snake_list))
+
+        # TODO: fix bug where being a snake_list of snake_list[head, segment]
+        # TODO: makes it so that you can go over each other because they "technically" never
+        # TODO: touch each other, snake_list[segment] is always one step behind so ssnake_list[head]
+        # TODO: can never touch snake_list[segment]
         # Lose condition handling ==========================
         # if the head collides with the body
-        if pygame.sprite.spritecollideany(head, snake_list[2:]):
+        if pygame.sprite.spritecollideany(head, snake_list[1:]):
             # TODO: make a cool losing screen
             running = False
 
@@ -83,7 +141,7 @@ def main_game():
                 snake_list.append(Player("images/snake_32b.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
             else:
                 snake_list.append(Player("images/snake_32.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
-            food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
+            food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
             # if the food spawns on top of a body segment
             while pygame.sprite.spritecollideany(food, snake_list):
@@ -94,11 +152,8 @@ def main_game():
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
-
-        keys = pygame.key.get_pressed()
-        if keys[K_ESCAPE]:
-            running = False
         
+        keys = pygame.key.get_pressed()
         # Snake movement ====================================
         if keys[K_a]:
             left = True
@@ -157,5 +212,5 @@ def main_game():
 
 
 if __name__ == '__main__':
-    main_game()
+    title_screen()
     pygame.quit()
