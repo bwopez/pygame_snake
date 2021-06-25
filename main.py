@@ -82,17 +82,17 @@ def title_screen():
         # button input ================================================
         keys = pygame.key.get_pressed()
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        # clicks[left_click, middle_click, right_click]
+        clicks = pygame.mouse.get_pressed()
         if keys[K_ESCAPE]:
             running = False
 
-        # TODO: fix bug where if you keep the mouse unmoved on the button when scenes change
-        # TODO: that it'll just press the button again
         # mouse hover left button
         # start
         if 150 <= mouse_x <= 150 + button_width and 700 <= mouse_y <= 700 + button_height:
             win.blit(button_pressed, (150, 700))
             win.blit(start_surface, (155, 705))
-            if event.type == pygame.MOUSEBUTTONUP:
+            if clicks[0]:
                 # pygame.time.wait(200)
                 main_game()
         else:
@@ -104,9 +104,10 @@ def title_screen():
         if 500 <= mouse_x <= 500 + button_width and 700 <= mouse_y <= 700 + button_height:
             win.blit(button_pressed, (500, 700))
             win.blit(quit_surface, (505, 705))
-            if event.type == pygame.MOUSEBUTTONUP:
+            if clicks[0]:
                 # pygame.time.wait(200)
                 running = False
+                continue
         else:
             win.blit(button_unpressed, (500, 700))
             win.blit(quit_surface, (500, 700))
