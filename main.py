@@ -71,8 +71,10 @@ def title_screen():
     while running:
         win.fill("White")
         win.blit(snake_splash, (0, 0))
+        start_surface = myfont.render("Start", True, ("Green"))
+        quit_surface = myfont.render("Quit", True, ("Green"))
 
-        # buttons
+        # quit conditions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -89,21 +91,25 @@ def title_screen():
         # start
         if 150 <= mouse_x <= 150 + button_width and 700 <= mouse_y <= 700 + button_height:
             win.blit(button_pressed, (150, 700))
+            win.blit(start_surface, (155, 705))
             if event.type == pygame.MOUSEBUTTONUP:
                 # pygame.time.wait(200)
                 main_game()
         else:
             win.blit(button_unpressed, (150, 700))
+            win.blit(start_surface, (150, 700))
         
         # mouse hover right button
         # quit
         if 500 <= mouse_x <= 500 + button_width and 700 <= mouse_y <= 700 + button_height:
             win.blit(button_pressed, (500, 700))
+            win.blit(quit_surface, (505, 705))
             if event.type == pygame.MOUSEBUTTONUP:
                 # pygame.time.wait(200)
                 running = False
         else:
             win.blit(button_unpressed, (500, 700))
+            win.blit(quit_surface, (500, 700))
 
         # title_screen update ============================================
         clock.tick(60)
