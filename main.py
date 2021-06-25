@@ -2,6 +2,8 @@ import pygame, random
 from pygame.locals import *
 # window creation =====================================
 pygame.init()
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
 clock = pygame.time.Clock()
 
 win = pygame.display.set_mode((800, 800))
@@ -115,14 +117,11 @@ def main_game():
     snake_list.append(head)
     food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
-    # movement
+    # move states
     left, right, up, down = False, False, False, False
 
     running = True
-
     while running:
-
-        # TODO: keep track of high score (len(snake_list))
 
         # TODO: fix bug where being a snake_list of snake_list[head, segment]
         # TODO: makes it so that you can go over each other because they "technically" never
@@ -206,9 +205,14 @@ def main_game():
         for segment in reversed(snake_list):
             segment.draw(win)
         food.draw(win)
+        # High score ======================================
+        text_surface = myfont.render(str(len(snake_list) - 1), False, ("Black"))
+        win.blit(text_surface, (win.get_rect().center[0] - text_surface.get_rect().width / 2, 30))
 
         clock.tick(15)
         pygame.display.update()
+    
+    return
 
 
 if __name__ == '__main__':
