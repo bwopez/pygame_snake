@@ -61,8 +61,10 @@ def main_game():
     head = Player("images/snake_32b.png")
     snake_list = []
     snake_list.append(head)
-
     food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
+
+    # movement
+    left, right, up, down = False, False, False, False
 
     running = True
 
@@ -99,24 +101,45 @@ def main_game():
         
         # Snake movement ====================================
         if keys[K_a]:
+            left = True
+            right = False
+            up = False
+            down = False
+        if keys[K_d]:
+            left = False
+            right = True
+            up = False
+            down = False
+        if keys[K_w]:
+            left = False
+            right = False
+            up = True
+            down = False
+        if keys[K_s]:
+            left = False
+            right = False
+            up = False
+            down = True
+        
+        if left:
             for segment in reversed(snake_list):
                 if snake_list.index(segment) == 0:
                     segment.move("left")
                 else:
                     segment.move("left", snake_list[snake_list.index(segment) - 1])
-        if keys[K_d]:
+        elif right:
             for segment in reversed(snake_list):
                 if snake_list.index(segment) == 0:
                     segment.move("right")
                 else:
                     segment.move("right", snake_list[snake_list.index(segment) - 1])
-        if keys[K_w]:
+        elif up:
             for segment in reversed(snake_list):
                 if snake_list.index(segment) == 0:
                     segment.move("up")
                 else:
                     segment.move("up", snake_list[snake_list.index(segment) - 1])
-        if keys[K_s]:
+        elif down:
             for segment in reversed(snake_list):
                 if snake_list.index(segment) == 0:
                     segment.move("down")
@@ -129,7 +152,7 @@ def main_game():
             segment.draw(win)
         food.draw(win)
 
-        clock.tick(27)
+        clock.tick(15)
         pygame.display.update()
 
 
