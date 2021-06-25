@@ -59,30 +59,34 @@ class Player(pygame.sprite.Sprite):
 
 def main_game():
     head = Player("images/snake_32b.png")
-    # snake_body1 = Player("images/snake_32.png")
-    # snake_body2 = Player("images/snake_32b.png")
-    # snake_body3 = Player("images/snake_32.png")
-    # snake_list = [head, snake_body1, snake_body2, snake_body3]
     snake_list = []
     snake_list.append(head)
 
-    food = Food(random.randint(0, win.get_width()), random.randint(0, win.get_height()))
+    food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
 
     running = True
 
     while running:
 
-        # TODO: kill the heart
-        # TODO: respawn a new heart
-        if head.rect.colliderect(food.rect):
-            print("We've got a hit")
+        # Lose condition handling ==========================
+        # if the head collides with the body
+        if pygame.sprite.spritecollideany(head, snake_list[2:]):
+            # TODO: make a cool losing screen
+            running = False
 
-        # Spawn heart in a random spot on the board
-        # if not food:
-        #     # if the snake is in that spot then find another one
-        #     heart_x = random.randint(0, win.width)
-        #     heart_y = random.randint(0, win.height)
-        #     food = Food(heart_x, heart_y)
+        # Eating the food ==================================
+        if head.rect.colliderect(food.rect):
+            food.kill()
+            if len(snake_list) % 2 == 0:
+                snake_list.append(Player("images/snake_32b.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
+            else:
+                snake_list.append(Player("images/snake_32.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
+            food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
+
+            # if the food spawns on top of a body segment
+            while pygame.sprite.spritecollideany(food, snake_list):
+                food.kill()
+                food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
 
         # Handle player quit ===============================
         for event in pygame.event.get():
@@ -92,15 +96,6 @@ def main_game():
         keys = pygame.key.get_pressed()
         if keys[K_ESCAPE]:
             running = False
-        
-        # TODO: randomize where the heart will appear
-        # TODO: when the snake collides with the heart, the heart is destroyed, it addes to the snake_list, new heart appears
-        # TODO: when the snake collides with itself or the wall, it dies and you lose
-        if keys[K_SPACE]:
-            if len(snake_list) % 2 == 0:
-                snake_list.append(Player("images/snake_32b.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
-            else:
-                snake_list.append(Player("images/snake_32.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
         
         # Snake movement ====================================
         if keys[K_a]:
