@@ -10,6 +10,7 @@ win = pygame.display.set_mode((800, 800))
 pygame.display.set_caption("snek gaem")
 
 
+# TODO: maybe turn this into a "static image" class and use it for the title screen buttons
 class Food(pygame.sprite.Sprite):
     def __init__(self, x=0, y=0):
         super().__init__()
@@ -107,7 +108,6 @@ def title_screen():
             if clicks[0]:
                 # pygame.time.wait(200)
                 running = False
-                continue
         else:
             win.blit(button_unpressed, (500, 700))
             win.blit(quit_surface, (500, 700))
@@ -125,7 +125,7 @@ def main_game():
     food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
     # move states
-    left, right, up, down = False, False, False, False
+    left, right, up, down = False, True, False, False
 
     running = True
     while running:
@@ -161,26 +161,91 @@ def main_game():
         
         keys = pygame.key.get_pressed()
         # Snake movement ====================================
-        if keys[K_a]:
-            left = True
-            right = False
-            up = False
-            down = False
-        if keys[K_d]:
-            left = False
-            right = True
-            up = False
-            down = False
-        if keys[K_w]:
-            left = False
-            right = False
-            up = True
-            down = False
-        if keys[K_s]:
-            left = False
-            right = False
-            up = False
-            down = True
+        if left:
+            if keys[K_a]:
+                left = True
+                right = False
+                up = False
+                down = False
+            if keys[K_w]:
+                left = False
+                right = False
+                up = True
+                down = False
+            if keys[K_s]:
+                left = False
+                right = False
+                up = False
+                down = True
+        if right:
+            if keys[K_d]:
+                left = False
+                right = True
+                up = False
+                down = False
+            if keys[K_w]:
+                left = False
+                right = False
+                up = True
+                down = False
+            if keys[K_s]:
+                left = False
+                right = False
+                up = False
+                down = True
+        if up:
+            if keys[K_a]:
+                left = True
+                right = False
+                up = False
+                down = False
+            if keys[K_d]:
+                left = False
+                right = True
+                up = False
+                down = False
+            if keys[K_w]:
+                left = False
+                right = False
+                up = True
+                down = False
+        if down:
+            if keys[K_a]:
+                left = True
+                right = False
+                up = False
+                down = False
+            if keys[K_d]:
+                left = False
+                right = True
+                up = False
+                down = False
+            if keys[K_s]:
+                left = False
+                right = False
+                up = False
+                down = True
+
+        # if keys[K_a]:
+        #     left = True
+        #     right = False
+        #     up = False
+        #     down = False
+        # if keys[K_d]:
+        #     left = False
+        #     right = True
+        #     up = False
+        #     down = False
+        # if keys[K_w]:
+        #     left = False
+        #     right = False
+        #     up = True
+        #     down = False
+        # if keys[K_s]:
+        #     left = False
+        #     right = False
+        #     up = False
+        #     down = True
         
         if left:
             for segment in reversed(snake_list):
