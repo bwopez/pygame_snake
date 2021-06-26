@@ -1,5 +1,6 @@
 import pygame, random
 from pygame.locals import *
+
 # window creation =====================================
 pygame.init()
 pygame.font.init()
@@ -10,11 +11,11 @@ win = pygame.display.set_mode((800, 800))
 pygame.display.set_caption("snek gaem")
 
 
-# TODO: maybe turn this into a "static image" class and use it for the title screen buttons
-class Food(pygame.sprite.Sprite):
-    def __init__(self, x=0, y=0):
+class Static_image(pygame.sprite.Sprite):
+    def __init__(self, img_url, x=0, y=0):
         super().__init__()
-        img = pygame.image.load("images/heart.png")
+        # img = pygame.image.load("images/heart.png")
+        img = pygame.image.load(img_url)
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.x = x 
@@ -61,17 +62,25 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = win.get_height()
 
 def title_screen():
-    snake_splash = pygame.image.load("images/snake_title_screen.png")
-    button_unpressed = pygame.image.load("images/button_unpressed.png")
-    button_pressed = pygame.image.load("images/button_pressed.png")
+    # snake_splash = pygame.image.load("images/snake_title_screen.png")
+    # button_unpressed = pygame.image.load("images/button_unpressed.png")
+    # button_pressed = pygame.image.load("images/button_pressed.png")
+    snake_splash = Static_image("images/snake_title_screen.png", 0, 0)
+    start_button_unpressed = Static_image("images/button_unpressed.png", 150, 700)
+    start_button_pressed = Static_image("images/button_pressed.png", 150, 700)
+    quit_button_unpressed = Static_image("images/button_unpressed.png", 500, 700)
+    quit_button_pressed = Static_image("images/button_pressed.png", 500, 700)
 
-    button_width = button_unpressed.get_rect().width
-    button_height = button_unpressed.get_rect().height
+    # button_width = button_unpressed.get_rect().width
+    # button_height = button_unpressed.get_rect().height
+    button_width = start_button_unpressed.rect.width
+    button_height = start_button_unpressed.rect.height
 
     running = True
     while running:
         win.fill("White")
-        win.blit(snake_splash, (0, 0))
+        # win.blit(snake_splash, (0, 0))
+        snake_splash.draw(win)
         start_surface = myfont.render("Start", True, ("Green"))
         quit_surface = myfont.render("Quit", True, ("Green"))
 
@@ -91,25 +100,29 @@ def title_screen():
         # mouse hover left button
         # start
         if 150 <= mouse_x <= 150 + button_width and 700 <= mouse_y <= 700 + button_height:
-            win.blit(button_pressed, (150, 700))
+            # win.blit(button_pressed, (150, 700))
+            start_button_pressed.draw(win)
             win.blit(start_surface, (155, 705))
             if clicks[0]:
                 # pygame.time.wait(200)
                 main_game()
         else:
-            win.blit(button_unpressed, (150, 700))
+            # win.blit(button_unpressed, (150, 700))
+            start_button_unpressed.draw(win)
             win.blit(start_surface, (150, 700))
         
         # mouse hover right button
         # quit
         if 500 <= mouse_x <= 500 + button_width and 700 <= mouse_y <= 700 + button_height:
-            win.blit(button_pressed, (500, 700))
+            # win.blit(button_pressed, (500, 700))
+            quit_button_pressed.draw(win)
             win.blit(quit_surface, (505, 705))
             if clicks[0]:
                 # pygame.time.wait(200)
                 running = False
         else:
-            win.blit(button_unpressed, (500, 700))
+            # win.blit(button_unpressed, (500, 700))
+            quit_button_unpressed.draw(win)
             win.blit(quit_surface, (500, 700))
 
         # title_screen update ============================================
@@ -122,7 +135,7 @@ def main_game():
     head = Player("images/snake_32b.png", (win.get_rect().center[0] - 32 / 2), (win.get_rect().center[1] - 32 / 2))
     snake_list = []
     snake_list.append(head)
-    food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
+    food = Static_image("images/heart.png", random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
     # move states
     left, right, up, down = False, True, False, False
@@ -130,10 +143,6 @@ def main_game():
     running = True
     while running:
 
-        # TODO: fix bug where being a snake_list of snake_list[head, segment]
-        # TODO: makes it so that you can go over each other because they "technically" never
-        # TODO: touch each other, snake_list[segment] is always one step behind so ssnake_list[head]
-        # TODO: can never touch snake_list[segment]
         # Lose condition handling ==========================
         # if the head collides with the body
         if pygame.sprite.spritecollideany(head, snake_list[1:]):
@@ -147,12 +156,12 @@ def main_game():
                 snake_list.append(Player("images/snake_32b.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
             else:
                 snake_list.append(Player("images/snake_32.png", snake_list[-1].rect.x, snake_list[-1].rect.y))
-            food = Food(random.randint(1, 7) * 100, random.randint(1, 7) * 100)
+            food = Static_image("images/heart.png", random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
             # if the food spawns on top of a body segment
             while pygame.sprite.spritecollideany(food, snake_list):
                 food.kill()
-                food = Food(random.randint(0, 7) * 100, random.randint(0, 7) * 100)
+                food = Static_image("images/heart.png", random.randint(0, 7) * 100, random.randint(0, 7) * 100)
 
         # Handle player quit ===============================
         for event in pygame.event.get():
@@ -225,27 +234,6 @@ def main_game():
                 right = False
                 up = False
                 down = True
-
-        # if keys[K_a]:
-        #     left = True
-        #     right = False
-        #     up = False
-        #     down = False
-        # if keys[K_d]:
-        #     left = False
-        #     right = True
-        #     up = False
-        #     down = False
-        # if keys[K_w]:
-        #     left = False
-        #     right = False
-        #     up = True
-        #     down = False
-        # if keys[K_s]:
-        #     left = False
-        #     right = False
-        #     up = False
-        #     down = True
         
         if left:
             for segment in reversed(snake_list):
