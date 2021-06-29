@@ -48,20 +48,20 @@ class Player(pygame.sprite.Sprite):
         else:
             if direction == "left":
                 self.rect.x += -self.step
-                if self.rect.left <= 0:
-                    self.rect.left = 0
+                # if self.rect.left <= 0:
+                #     self.rect.left = 0
             elif direction == "right":
                 self.rect.x += self.step
-                if self.rect.right >= win.get_width():
-                    self.rect.right = win.get_width()
+                # if self.rect.right >= win.get_width():
+                #     self.rect.right = win.get_width()
             elif direction == "up":
                 self.rect.y += -self.step
-                if self.rect.top <= 0:
-                    self.rect.top = 0
+                # if self.rect.top <= 0:
+                #     self.rect.top = 0
             elif direction == "down":
                 self.rect.y += self.step
-                if self.rect.bottom >= win.get_height():
-                    self.rect.bottom = win.get_height()
+                # if self.rect.bottom >= win.get_height():
+                #     self.rect.bottom = win.get_height()
 
 def title_screen():
     snake_splash = Static_image("images/snake_title_screen.png", 0, 0)
@@ -138,6 +138,14 @@ def main_game():
         # if the head collides with the body
         if pygame.sprite.spritecollideany(head, snake_list[1:]):
             # TODO: make a cool losing screen
+            running = False
+        if head.rect.right > win.get_width():
+            running = False
+        if head.rect.left < 0:
+            running = False
+        if head.rect.top < 0:
+            running = False
+        if head.rect.bottom > win.get_height():
             running = False
 
         # Eating the food ==================================
