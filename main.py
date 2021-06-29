@@ -11,6 +11,8 @@ win = pygame.display.set_mode((800, 800))
 pygame.display.set_caption("snek gaem")
 
 
+# TODO: make a transition screen from title screen to play game state
+# TODO: make a losing screen
 class Static_image(pygame.sprite.Sprite):
     def __init__(self, img_url, x=0, y=0):
         super().__init__()
@@ -62,24 +64,18 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = win.get_height()
 
 def title_screen():
-    # snake_splash = pygame.image.load("images/snake_title_screen.png")
-    # button_unpressed = pygame.image.load("images/button_unpressed.png")
-    # button_pressed = pygame.image.load("images/button_pressed.png")
     snake_splash = Static_image("images/snake_title_screen.png", 0, 0)
     start_button_unpressed = Static_image("images/button_unpressed.png", 150, 700)
     start_button_pressed = Static_image("images/button_pressed.png", 150, 700)
     quit_button_unpressed = Static_image("images/button_unpressed.png", 500, 700)
     quit_button_pressed = Static_image("images/button_pressed.png", 500, 700)
 
-    # button_width = button_unpressed.get_rect().width
-    # button_height = button_unpressed.get_rect().height
     button_width = start_button_unpressed.rect.width
     button_height = start_button_unpressed.rect.height
 
     running = True
     while running:
         win.fill("White")
-        # win.blit(snake_splash, (0, 0))
         snake_splash.draw(win)
         start_surface = myfont.render("Start", True, ("Green"))
         quit_surface = myfont.render("Quit", True, ("Green"))
@@ -100,28 +96,22 @@ def title_screen():
         # mouse hover left button
         # start
         if 150 <= mouse_x <= 150 + button_width and 700 <= mouse_y <= 700 + button_height:
-            # win.blit(button_pressed, (150, 700))
             start_button_pressed.draw(win)
             win.blit(start_surface, (155, 705))
             if clicks[0]:
-                # pygame.time.wait(200)
                 main_game()
         else:
-            # win.blit(button_unpressed, (150, 700))
             start_button_unpressed.draw(win)
             win.blit(start_surface, (150, 700))
         
         # mouse hover right button
         # quit
         if 500 <= mouse_x <= 500 + button_width and 700 <= mouse_y <= 700 + button_height:
-            # win.blit(button_pressed, (500, 700))
             quit_button_pressed.draw(win)
             win.blit(quit_surface, (505, 705))
             if clicks[0]:
-                # pygame.time.wait(200)
                 running = False
         else:
-            # win.blit(button_unpressed, (500, 700))
             quit_button_unpressed.draw(win)
             win.blit(quit_surface, (500, 700))
 
@@ -138,9 +128,10 @@ def main_game():
     food = Static_image("images/heart.png", random.randint(1, 7) * 100, random.randint(1, 7) * 100)
 
     # move states
-    left, right, up, down = False, True, False, False
+    left, right, up, down = False, False, False, False
 
     running = True
+    game_paused = True
     while running:
 
         # Lose condition handling ==========================
@@ -169,71 +160,85 @@ def main_game():
                 running = False
         
         keys = pygame.key.get_pressed()
+        if game_paused:
+            if keys[K_a]:
+                left = True
+                game_paused = False
+            elif keys[K_d]:
+                right = True
+                game_paused = False
+            elif keys[K_w]:
+                up = True
+                game_paused = False
+            elif keys[K_s]:
+                down = True
+                game_paused = False
         # Snake movement ====================================
-        if left:
-            if keys[K_a]:
-                left = True
-                right = False
-                up = False
-                down = False
-            if keys[K_w]:
-                left = False
-                right = False
-                up = True
-                down = False
-            if keys[K_s]:
-                left = False
-                right = False
-                up = False
-                down = True
-        if right:
-            if keys[K_d]:
-                left = False
-                right = True
-                up = False
-                down = False
-            if keys[K_w]:
-                left = False
-                right = False
-                up = True
-                down = False
-            if keys[K_s]:
-                left = False
-                right = False
-                up = False
-                down = True
-        if up:
-            if keys[K_a]:
-                left = True
-                right = False
-                up = False
-                down = False
-            if keys[K_d]:
-                left = False
-                right = True
-                up = False
-                down = False
-            if keys[K_w]:
-                left = False
-                right = False
-                up = True
-                down = False
-        if down:
-            if keys[K_a]:
-                left = True
-                right = False
-                up = False
-                down = False
-            if keys[K_d]:
-                left = False
-                right = True
-                up = False
-                down = False
-            if keys[K_s]:
-                left = False
-                right = False
-                up = False
-                down = True
+        else:
+            if left:
+                if keys[K_a]:
+                    left = True
+                    right = False
+                    up = False
+                    down = False
+                if keys[K_w]:
+                    left = False
+                    right = False
+                    up = True
+                    down = False
+                if keys[K_s]:
+                    left = False
+                    right = False
+                    up = False
+                    down = True
+            if right:
+                if keys[K_d]:
+                    left = False
+                    right = True
+                    up = False
+                    down = False
+                if keys[K_w]:
+                    left = False
+                    right = False
+                    up = True
+                    down = False
+                if keys[K_s]:
+                    left = False
+                    right = False
+                    up = False
+                    down = True
+            if up:
+                if keys[K_a]:
+                    left = True
+                    right = False
+                    up = False
+                    down = False
+                if keys[K_d]:
+                    left = False
+                    right = True
+                    up = False
+                    down = False
+                if keys[K_w]:
+                    left = False
+                    right = False
+                    up = True
+                    down = False
+            if down:
+                if keys[K_a]:
+                    left = True
+                    right = False
+                    up = False
+                    down = False
+                if keys[K_d]:
+                    left = False
+                    right = True
+                    up = False
+                    down = False
+                if keys[K_s]:
+                    left = False
+                    right = False
+                    up = False
+                    down = True
         
         if left:
             for segment in reversed(snake_list):
